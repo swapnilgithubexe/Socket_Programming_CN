@@ -6,12 +6,47 @@
   <title>Chat App</title>
 </head>
 <body>
+  <div class="chat-container">
+    <div id="message-list">
+
+    </div>
+    <input type="text" id="message-input">
+    <button id="send-message">Send</button>
+  </div>
   
   <script src="http://localhost:3100/socket.io/socket.io.js">
   </script>
   <script>
     //socket connection code
-    const server = io.connect("http://localhost:3100");
+    const socket = io.connect("http://localhost:3100");
+    const username = prompt("Enter your name");
+
+    //emit the user name
+    socket.emit("join", username);
+
+    const messageInput = document.getElementById("message-input");
+    const messageList = document.getElementById("message-list");
+    const sendButton = document.getElementById("send-message");
+
+    sendButton.addEventListener("click", ()=>{
+const message = messageInput.value;
+if(message){
+  socket.emit("new_message", message);
+
+  const messageElement = document.createElement("div");
+  messageElement.innerText = username + ":" + message;
+  messageList.appendChild(messageElement);
+
+  messageInput.value = "";
+}
+    })
+
+    //listen to the broadcast message
+    socket.on("broadcast_message", (userMessage)=>{
+      const messageElement = document.createElement("div");
+      messageElement.innerText = userMessage.username + ":" + userMessage.message;
+      messageList.appendChild(messageElement);
+    })
   </script>
 
 </body>
