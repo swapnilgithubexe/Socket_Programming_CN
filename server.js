@@ -4,6 +4,7 @@ import cors from "cors";
 import http from "http";
 
 const app = express();
+app.use(cors())
 
 //http server (to start the connection)
 const server = http.createServer(app);
