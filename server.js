@@ -26,6 +26,11 @@ io.on("connection", (socket) => {
   socket.on("join", (data) => {
     socket.username = data;
   })
+  //Load old messages here after new user joins
+  chatModel.find().sort({ timestamp: 1 }).limit(50).then(message => {
+    socket.emit("load_messages", message)
+  }).catch(err => console.log(err)
+  )
   socket.on("new_message", (message) => {
 
     let userMessage = {

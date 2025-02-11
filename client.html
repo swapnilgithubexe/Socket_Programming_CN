@@ -41,6 +41,16 @@ if(message){
 }
     })
 
+    //display messages
+    socket.on("load_messages", (messages)=>{
+      messages.forEach(message => {
+        const messageElement = document.createElement("div");
+        messageElement.innerText = message.timestamp + " " + message.username + ":" + message.message
+        messageList.appendChild(messageElement);
+      });
+
+    })
+
     //listen to the broadcast message
     socket.on("broadcast_message", (userMessage)=>{
       const messageElement = document.createElement("div");
