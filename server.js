@@ -2,6 +2,8 @@ import express from "express";
 import { Server } from "socket.io";
 import cors from "cors";
 import http from "http";
+import { connect } from "./config.js";
+import chatModel from "./chatSchema.js";
 
 const app = express();
 app.use(cors())
@@ -30,6 +32,12 @@ io.on("connection", (socket) => {
       username: socket.username,
       message: message
     }
+    const newChat = new chatModel({
+      username: socket.username,
+      message: message,
+      timestamp: new Date()
+    })
+    newChat.save();
     //broadcast message
     socket.broadcast.emit("broadcast_message", userMessage);
   });
@@ -41,5 +49,6 @@ io.on("connection", (socket) => {
 
 server.listen(3100, () => {
   console.log("App is listening on port 3100");
+  connect();
 
 })
